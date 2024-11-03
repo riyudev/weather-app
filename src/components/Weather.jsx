@@ -17,6 +17,7 @@ import { LiaWaterSolid } from "react-icons/lia";
 function Weather() {
   const inputRef = useRef();
   const [weatherData, setWeatherData] = useState(false);
+  const [error, setError] = useState(false);
 
   const allIcons = {
     "01d": <MdSunny />,
@@ -47,17 +48,23 @@ function Weather() {
 
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data);
-      const icon = allIcons[data.weather[0].icon] || <MdSunny />;
-      setWeatherData({
-        humidity: data.main.humidity,
-        windSpeed: data.wind.speed,
-        temperature: Math.floor(data.main.temp),
-        location: data.name,
-        icon: icon,
-      });
+
+      if (data.cod === 200) {
+        const icon = allIcons[data.weather[0].icon] || <MdSunny />;
+        setWeatherData({
+          humidity: data.main.humidity,
+          windSpeed: data.wind.speed,
+          temperature: Math.floor(data.main.temp),
+          location: data.name,
+          icon: icon,
+        });
+        setError(false);
+      } else {
+        setError(true);
+      }
     } catch (error) {
       console.log("ERROR:", error);
+      setError(true);
     }
   };
 
@@ -77,17 +84,27 @@ function Weather() {
         Weather App
       </h1>
       <div className="flex flex-col items-center justify-center space-y-10 md:max-w-md w-full">
-        <div className="flex items-center justify-center space-x-3">
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Search Location"
-            onKeyDown={handleKeyDown}
-            className="font-poppinsRegular px-5 py-2 min-w-20 w-full max-w-fit border-none rounded-full focus:outline-none focus:ring-2 focus:ring-green-400"
-          />
-          <div className="p-2 rounded-full bg-white">
-            <CiSearch className="text-2xl" />
+        <div className="flex flex-col items-center justify-center space-y-3">
+          <div className="flex items-center justify-center space-x-3">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Search Location"
+              onKeyDown={handleKeyDown}
+              className="font-poppinsRegular px-5 py-2 min-w-20 w-full max-w-fit border-none rounded-full focus:outline-none focus:ring-4  focus:ring-green-400"
+            />
+            <div
+              onClick={() => search(inputRef.current.value)}
+              className="p-2 rounded-full bg-white cursor-pointer active:bg-slate-300"
+            >
+              <CiSearch className="text-2xl" />
+            </div>
           </div>
+          {error && (
+            <p className="text-red-500 font-poppinsRegular">
+              Location not found!
+            </p>
+          )}
         </div>
 
         <div className="text-8xl text-yellow-400">{weatherData.icon}</div>
