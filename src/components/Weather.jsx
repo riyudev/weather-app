@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoPartlySunny } from "react-icons/io5";
-import { MdSunny } from "react-icons/md";
+import { MdSunny, MdLocationPin } from "react-icons/md";
+import { VscLocation } from "react-icons/vsc";
 import { FaCloud, FaCloudMoon } from "react-icons/fa";
 import { RiMoonClearFill } from "react-icons/ri";
 import {
@@ -79,32 +80,41 @@ function Weather() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gradient-to-bl from-slate-700 to-slate-900 bg-slate-900 p-8 max-w-[93%] sm:max-w-md w-full rounded-lg space-y-8 mx-5">
+    <div className="flex flex-col items-center justify-center bg-gradient-to-bl from-slate-700 to-slate-900 bg-slate-900 p-8 max-w-[93%] sm:max-w-md w-full rounded-lg space-y-10 mx-5">
       <h1 className="font-poppinsBold text-3xl text-green-400 text-center">
         Weather App
       </h1>
       <div className="flex flex-col items-center justify-center space-y-10 md:max-w-md w-full">
-        <div className="flex flex-col items-center justify-center space-y-3">
-          <div className="flex items-center justify-center space-x-3">
+        <div className="flex flex-col items-center justify-center space-y-2">
+          <div className="flex items-center justify-center bg-white rounded-full">
+            <div className="pl-3 pb-[2px]">
+              <VscLocation className="text-xl text-slate-400" />
+            </div>
+
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search Location"
+              placeholder="Location"
+              onFocus={() => (inputRef.current.value = "")}
               onKeyDown={handleKeyDown}
-              className="font-poppinsRegular px-5 py-2 min-w-20 w-full max-w-fit border-none rounded-full focus:outline-none focus:ring-4  focus:ring-green-400"
+              className="font-poppinsRegular py-2 pr-2 pl-1 min-w-20 w-full max-w-44 border-none rounded-full focus:outline-none"
             />
+
             <div
               onClick={() => search(inputRef.current.value)}
-              className="p-2 rounded-full bg-white cursor-pointer active:bg-slate-300"
+              className="py-2 px-4 rounded-r-full bg-green-400 cursor-pointer active:bg-green-300"
             >
               <CiSearch className="text-2xl" />
             </div>
           </div>
-          {error && (
-            <p className="text-red-500 font-poppinsRegular">
-              Location not found!
-            </p>
-          )}
+
+          <p
+            className={`text-red-500 font-poppinsRegular text-sm ${
+              error ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            Location not found!
+          </p>
         </div>
 
         <div className="text-8xl text-yellow-400">{weatherData.icon}</div>
